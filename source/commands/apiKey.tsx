@@ -18,7 +18,7 @@ export default function apiKey({args}: Props) {
 		fs.writeFileSync(KEY_FILE_PATH, args[0]);
 		return (
 			<Text>
-				<Text color="green">Key saved to './permit.key'</Text>
+				<Text color="green">Key saved to '{KEY_FILE_PATH}'</Text>
 			</Text>
 		);
 	} else {

@@ -16,10 +16,11 @@ $ permit-cli --help
   Usage
     $ permit-cli
 
-  Options
-    --name  Your name
-
   Examples
-    $ permit-cli --name=Jane
-    Hello, Jane
+    $ permit-cli pdp check -u filip@permit.io -a create -r task
+    Checking user="filip@permit.io" action=create resource=task at tenant=default
+    ALLOWED
+
+    $ permit-cli api-key permit_key_..........
+    Key saved to './permit.key'
 ```

@@ -2,10 +2,11 @@ import React from 'react';
 import {Text} from 'ink';
 import zod from 'zod';
 import {option} from 'pastel';
-import * as fs from 'fs';
-import {KEY_FILE_PATH, CLOUD_PDP_URL} from '../../config.js';
+import {CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME} from '../../config.js';
 import Spinner from 'ink-spinner';
 import axios from 'axios';
+import {keyAccountOption} from '../../options/keychain.js';
+import * as keytar from 'keytar';
 
 export const options = zod.object({
 	user: zod
@@ -36,9 +37,10 @@ export const options = zod.object({
 		.optional()
 		.describe(
 			option({
-				description: 'The API key for hte Permit env, project or Workspace',
+				description: 'The API key for the Permit env, project or Workspace',
 			}),
 		),
+	keyAccount: keyAccountOption,
 });
 
 type Props = {
@@ -51,7 +53,9 @@ interface AllowedResult {
 
 export default function Check({options}: Props) {
 	// get key or read from file
-	const apiKey = options.apiKey || fs.readFileSync(KEY_FILE_PATH);
+	const apiKey =
+		options.apiKey ||
+		keytar.getPassword(KEYSTORE_PERMIT_SERVICE_NAME, options.keyAccount);
 	// result of API
 	const [res, setRes] = React.useState<AllowedResult>({allow: undefined});
 	React.useEffect(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'ink';
+import {Box, Newline, Text, Spacer} from 'ink';
 import zod from 'zod';
 import {option} from 'pastel';
 import {CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME} from '../../config.js';
@@ -7,6 +7,7 @@ import Spinner from 'ink-spinner';
 import axios from 'axios';
 import {keyAccountOption} from '../../options/keychain.js';
 import * as keytar from 'keytar';
+import {inspect} from 'util';
 
 export const options = zod.object({
 	user: zod
@@ -52,13 +53,11 @@ interface AllowedResult {
 }
 
 export default function Check({options}: Props) {
-	// get key or read from file
-	const apiKey =
-		options.apiKey ||
-		keytar.getPassword(KEYSTORE_PERMIT_SERVICE_NAME, options.keyAccount);
+	const [error, setError] = React.useState(null);
 	// result of API
 	const [res, setRes] = React.useState<AllowedResult>({allow: undefined});
-	React.useEffect(() => {
+
+	const queryPDP = (apiKey: String) => {
 		const req = axios.post(
 			`${CLOUD_PDP_URL}/allowed`,
 			{
@@ -66,11 +65,28 @@ export default function Check({options}: Props) {
 				resource: {type: options.resource, tenant: options.tenant},
 				action: options.action,
 			},
-			{headers: {Authorization: `Bearer ${apiKey}`}},
+			// pass api key if not empty
+			{headers: apiKey ? {Authorization: `Bearer ${apiKey}`} : {}},
 		);
-		req.then(result => {
-			setRes(result.data);
-		});
+		req
+			.then(result => {
+				setRes(result.data);
+			})
+			.catch(reason => {
+				setError(reason);
+			});
+	};
+
+	React.useEffect(() => {
+		keytar
+			.getPassword(KEYSTORE_PERMIT_SERVICE_NAME, options.keyAccount)
+			.then(value => {
+				const apiKey = value || '';
+				queryPDP(apiKey);
+			})
+			.catch(reason => {
+				setError(reason);
+			});
 	}, []);
 
 	return (
@@ -79,9 +95,29 @@ export default function Check({options}: Props) {
 				Checking user="{options.user}" action={options.action} resource=
 				{options.resource} at tenant={options.tenant}
 			</Text>
-			{res.allow === true && <Text color={'green'}> ALLOWED </Text>}
+			{res.allow === true && (
+				<>
+					<Text color={'green'}> ALLOWED </Text>
+					<Box marginLeft={4}>
+						<Text>
+							{inspect(res, {
+								colors: true,
+								depth: null,
+								maxArrayLength: Infinity,
+							})}
+						</Text>
+					</Box>
+				</>
+			)}
 			{res.allow === false && <Text color={'red'}> DENIED</Text>}
-			{res.allow === undefined && <Spinner type="dots" />}
+			{res.allow === undefined && error === null && <Spinner type="dots" />}
+			{error && (
+				<Box>
+					<Text color="red">Request failed: {JSON.stringify(error)}</Text>
+					<Newline />
+					<Text>{JSON.stringify(res)}</Text>
+				</Box>
+			)}
 		</>
 	);
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Newline, Text, Spacer} from 'ink';
+import {Box, Newline, Text} from 'ink';
 import zod from 'zod';
 import {option} from 'pastel';
 import {CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME} from '../../config.js';

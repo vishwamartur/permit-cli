@@ -1,23 +1,23 @@
 import React from 'react';
-import {Box, Newline, Text} from 'ink';
+import { Box, Newline, Text } from 'ink';
 import zod from 'zod';
-import {option} from 'pastel';
-import {CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME} from '../../config.js';
+import { option } from 'pastel';
+import { CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME } from '../../config.js';
 import Spinner from 'ink-spinner';
 import axios from 'axios';
-import {keyAccountOption} from '../../options/keychain.js';
+import { keyAccountOption } from '../../options/keychain.js';
 import * as keytar from 'keytar';
-import {inspect} from 'util';
+import { inspect } from 'util';
 
 export const options = zod.object({
 	user: zod
 		.string()
 		.describe(
-			option({description: 'Unique Identity to check for', alias: 'u'}),
+			option({ description: 'Unique Identity to check for', alias: 'u' }),
 		),
 	resource: zod
 		.string()
-		.describe(option({description: 'Resource being accessed', alias: 'r'})),
+		.describe(option({ description: 'Resource being accessed', alias: 'r' })),
 	action: zod.string().describe(
 		option({
 			description: 'Action being performed on the resource by the user',
@@ -52,21 +52,21 @@ interface AllowedResult {
 	allow?: boolean;
 }
 
-export default function Check({options}: Props) {
+export default function Check({ options }: Props) {
 	const [error, setError] = React.useState(null);
 	// result of API
-	const [res, setRes] = React.useState<AllowedResult>({allow: undefined});
+	const [res, setRes] = React.useState<AllowedResult>({ allow: undefined });
 
 	const queryPDP = (apiKey: String) => {
 		const req = axios.post(
 			`${CLOUD_PDP_URL}/allowed`,
 			{
-				user: {key: options.user},
-				resource: {type: options.resource, tenant: options.tenant},
+				user: { key: options.user },
+				resource: { type: options.resource, tenant: options.tenant },
 				action: options.action,
 			},
 			// pass api key if not empty
-			{headers: apiKey ? {Authorization: `Bearer ${apiKey}`} : {}},
+			{ headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {} },
 		);
 		req
 			.then(result => {

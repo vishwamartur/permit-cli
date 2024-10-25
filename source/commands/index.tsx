@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'ink';
+import { Text } from 'ink';
 import zod from 'zod';
 
 export const options = zod.object({
@@ -10,7 +10,7 @@ type Props = {
 	options: zod.infer<typeof options>;
 };
 
-export default function Index({options}: Props) {
+export default function Index({ options }: Props) {
 	return (
 		<Text>
 			Hello, <Text color="green">{options.name}</Text>

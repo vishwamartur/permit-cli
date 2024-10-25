@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {createHash, randomBytes} from 'crypto';
+import React, { useEffect, useState } from 'react';
+import { createHash, randomBytes } from 'crypto';
 import * as http from 'http';
-import {Text} from 'ink';
+import { Text } from 'ink';
 import open from 'open';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
@@ -31,10 +31,10 @@ export default function Login() {
 				},
 			}).then(response => response.json());
 			if (orgs && orgs.length === 1) {
-				setActiveOrg({label: orgs[0].name, value: orgs[0].id});
+				setActiveOrg({ label: orgs[0].name, value: orgs[0].id });
 				setState('project');
 			}
-			setOrgs(orgs.map((org: any) => ({label: org.name, value: org.id})));
+			setOrgs(orgs.map((org: any) => ({ label: org.name, value: org.id })));
 		};
 		if (accessToken && cookie && state === 'org') {
 			fetchOrgs();
@@ -97,7 +97,7 @@ export default function Login() {
 				},
 			}).then(response => response.json());
 			if (projects.length === 1) {
-				setActiveProject({label: projects[0].name, value: projects[0].id});
+				setActiveProject({ label: projects[0].name, value: projects[0].id });
 				setState('environment');
 			}
 			setProjects(

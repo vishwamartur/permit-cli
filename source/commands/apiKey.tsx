@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, Newline} from 'ink';
+import { Text, Newline } from 'ink';
 import zod from 'zod';
-import {keyAccountOption} from '../options/keychain.js';
-import {KEYSTORE_PERMIT_SERVICE_NAME} from '../config.js';
+import { keyAccountOption } from '../options/keychain.js';
+import { KEYSTORE_PERMIT_SERVICE_NAME } from '../config.js';
 
 import keytar from 'keytar';
 
@@ -22,7 +22,7 @@ type Props = {
 	options: zod.infer<typeof options>;
 };
 
-export default function apiKey({args, options}: Props) {
+export default function apiKey({ args, options }: Props) {
 	const action: string = args[0];
 	const key: string = args[1];
 	const isValid = key.length >= 97 && key.startsWith('permit_key_');

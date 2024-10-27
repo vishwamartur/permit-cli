@@ -1,5 +1,5 @@
 import React from 'react';
-import { Newline, Text } from 'ink';
+import { Text } from 'ink';
 import Spinner from 'ink-spinner';
 import { useAuth } from './AuthProvider.js';
 

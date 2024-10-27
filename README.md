@@ -1,3 +1,6 @@
+
+![permit CLI](https://github.com/user-attachments/assets/89dbb075-6d88-4fd7-8d19-9490177248fc)
+
 # Permit CLI
 
 A command line utility from Permit.io to work with everything IAM and Authorization.

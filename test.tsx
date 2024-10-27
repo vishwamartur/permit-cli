@@ -7,9 +7,9 @@ import Check from './source/commands/pdp/check.js';
 
 const API_KEY = process.env.API_KEY;
 
-test('basic', t => {
-	t.test('Should return ALLOWED', () => {
-		const { lastFrame, rerender, frames } = render(
+test('check', t => {
+	t.test('Should Display Checking indicator', () => {
+		const { lastFrame } = render(
 			<Check
 				options={{
 					user: 'filip@permit.io',
@@ -22,7 +22,10 @@ test('basic', t => {
 				}}
 			/>,
 		);
-		const res = frames;
-		assert.equal(res, 'ALLOWED');
+		const res = lastFrame();
+		assert.equal(
+			res,
+			'Checking user="filip@permit.io" action=create resource=task at tenant=default\n⠋',
+		);
 	});
 });

@@ -7,7 +7,7 @@ export default function Index() {
 	return (
 		<>
 			<Gradient colors={['#FF923F', '#944EEF']}>
-				<BigText text="Permit.io CLI" />
+				<BigText text="Permit CLI" />
 			</Gradient>
 			<Text>Run this command with --help for more information</Text>
 		</>

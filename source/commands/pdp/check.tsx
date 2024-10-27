@@ -26,6 +26,7 @@ export const options = zod.object({
 	),
 	tenant: zod
 		.string()
+		.optional()
 		.default('default')
 		.describe(
 			option({

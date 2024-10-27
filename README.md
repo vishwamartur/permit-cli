@@ -1,4 +1,3 @@
-
 ![permit CLI](https://github.com/user-attachments/assets/89dbb075-6d88-4fd7-8d19-9490177248fc)
 
 # Permit CLI

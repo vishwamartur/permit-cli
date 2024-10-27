@@ -1,11 +1,28 @@
 import React from 'react';
 import chalk from 'chalk';
-import test from 'ava';
+import { test } from 'node:test';
 import { render } from 'ink-testing-library';
-import Index from './source/commands/index.js';
+import assert from 'node:assert';
+import Check from './source/commands/pdp/check.js';
 
-test('greet user', t => {
-	const { lastFrame } = render(<Index options={{ name: 'Jane' }} />);
+const API_KEY = process.env.API_KEY;
 
-	t.is(lastFrame(), `Hello, ${chalk.green('Jane')}`);
+test('basic', t => {
+	t.test('Should return ALLOWED', () => {
+		const { lastFrame, rerender, frames } = render(
+			<Check
+				options={{
+					user: 'filip@permit.io',
+					action: 'create',
+					resource: 'task',
+					apiKey: API_KEY,
+					// optional
+					tenant: 'default',
+					keyAccount: '',
+				}}
+			/>,
+		);
+		const res = frames;
+		assert.equal(res, 'ALLOWED');
+	});
 });

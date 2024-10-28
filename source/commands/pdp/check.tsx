@@ -1,10 +1,9 @@
 import React from 'react';
 import { Box, Newline, Text } from 'ink';
-import zod from 'zod';
+import zod, { string } from 'zod';
 import { option } from 'pastel';
 import { CLOUD_PDP_URL, KEYSTORE_PERMIT_SERVICE_NAME } from '../../config.js';
 import Spinner from 'ink-spinner';
-import axios from 'axios';
 import { keyAccountOption } from '../../options/keychain.js';
 import * as keytar from 'keytar';
 import { inspect } from 'util';
@@ -34,6 +33,11 @@ export const options = zod.object({
 				alias: 't',
 			}),
 		),
+	pdpurl: string().optional().describe(
+		option({
+			description: 'The URL of the PDP service. Default to the cloud PDP.',
+		}),
+	),
 	apiKey: zod
 		.string()
 		.optional()
@@ -54,28 +58,37 @@ interface AllowedResult {
 }
 
 export default function Check({ options }: Props) {
-	const [error, setError] = React.useState(null);
+	const [error, setError] = React.useState('');
 	// result of API
 	const [res, setRes] = React.useState<AllowedResult>({ allow: undefined });
 
-	const queryPDP = (apiKey: String) => {
-		const req = axios.post(
-			`${CLOUD_PDP_URL}/allowed`,
+	const queryPDP = async (apiKey: string) => {
+		const response = await fetch(
+			`${options.pdpurl || CLOUD_PDP_URL}/allowed`,
 			{
-				user: { key: options.user },
-				resource: { type: options.resource, tenant: options.tenant },
-				action: options.action,
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+				},
+				body: JSON.stringify({
+					user: { key: options.user },
+					resource: {
+						type: options.resource.includes(':') ? options.resource.split(':')[0] : options.resource,
+						key: options.resource.includes(':') ? options.resource.split(':')[1] : '',
+						tenant: options.tenant
+					},
+					action: options.action,
+				}),
 			},
-			// pass api key if not empty
-			{ headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {} },
 		);
-		req
-			.then(result => {
-				setRes(result.data);
-			})
-			.catch(reason => {
-				setError(reason);
-			});
+
+		if (!response.ok) {
+			setError(await response.text());
+			return;
+		}
+
+		setRes(await response.json());
 	};
 
 	React.useEffect(() => {

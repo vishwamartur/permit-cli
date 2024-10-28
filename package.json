@@ -11,7 +11,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"dev": "tsc --watch",
+		"dev": " NODE_NO_WARNINGS=1 tsc --watch",
 		"test": "prettier --check ./source && npx tsx --test test*.tsx",
 		"simple-check": "npx tsx ./source/cli.tsx pdp check -u filip@permit.io -a create -r task"
 	},
@@ -19,7 +19,6 @@
 		"dist"
 	],
 	"dependencies": {
-		"axios": "^1.7.7",
 		"fuse.js": "^7.0.0",
 		"ink": "^5.0.1",
 		"ink-ascii": "^0.0.4",
@@ -30,6 +29,7 @@
 		"keytar": "^7.9.0",
 		"open": "^10.1.0",
 		"pastel": "^3.0.0",
+		"permitio": "^2.7.2",
 		"react": "^18.2.0",
 		"zod": "^3.21.4"
 	},

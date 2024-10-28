@@ -6,7 +6,7 @@ import Spinner from 'ink-spinner';
 import { keyAccountOption } from '../../options/keychain.js';
 import { inspect } from 'util';
 import { loadAuthToken } from '../../lib/auth.js';
-import { TextInput, UnorderedList, Select } from '@inkjs/ui';
+import { TextInput, Select } from '@inkjs/ui';
 import Fuse from 'fuse.js';
 
 export const options = zod.object({
@@ -124,7 +124,13 @@ export default function List({ options }: Props) {
 				<Box>
 					<Text color="red">Request failed: {JSON.stringify(error)}</Text>
 					<Newline />
-					<Text>{JSON.stringify(res)}</Text>
+					<Text>
+						{inspect(res, {
+							colors: true,
+							depth: null,
+							maxArrayLength: Infinity,
+						})}
+					</Text>
 				</Box>
 			)}
 		</>

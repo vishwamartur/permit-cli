@@ -33,11 +33,13 @@ export const options = zod.object({
 				alias: 't',
 			}),
 		),
-	pdpurl: string().optional().describe(
-		option({
-			description: 'The URL of the PDP service. Default to the cloud PDP.',
-		}),
-	),
+	pdpurl: string()
+		.optional()
+		.describe(
+			option({
+				description: 'The URL of the PDP service. Default to the cloud PDP.',
+			}),
+		),
 	apiKey: zod
 		.string()
 		.optional()
@@ -63,25 +65,26 @@ export default function Check({ options }: Props) {
 	const [res, setRes] = React.useState<AllowedResult>({ allow: undefined });
 
 	const queryPDP = async (apiKey: string) => {
-		const response = await fetch(
-			`${options.pdpurl || CLOUD_PDP_URL}/allowed`,
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
-				},
-				body: JSON.stringify({
-					user: { key: options.user },
-					resource: {
-						type: options.resource.includes(':') ? options.resource.split(':')[0] : options.resource,
-						key: options.resource.includes(':') ? options.resource.split(':')[1] : '',
-						tenant: options.tenant
-					},
-					action: options.action,
-				}),
+		const response = await fetch(`${options.pdpurl || CLOUD_PDP_URL}/allowed`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
 			},
-		);
+			body: JSON.stringify({
+				user: { key: options.user },
+				resource: {
+					type: options.resource.includes(':')
+						? options.resource.split(':')[0]
+						: options.resource,
+					key: options.resource.includes(':')
+						? options.resource.split(':')[1]
+						: '',
+					tenant: options.tenant,
+				},
+				action: options.action,
+			}),
+		});
 
 		if (!response.ok) {
 			setError(await response.text());

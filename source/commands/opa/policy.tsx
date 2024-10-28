@@ -40,7 +40,7 @@ interface QueryResult {
 	status: number;
 }
 
-export default function List({ options }: Props) {
+export default function Policy({ options }: Props) {
 	const [error, setError] = React.useState(null);
 	// result of API
 	const [res, setRes] = React.useState<QueryResult>({
@@ -103,7 +103,7 @@ export default function List({ options }: Props) {
 								/>
 							</Box>
 							<Box padding={2} flexDirection="column" gap={1}>
-								<Select options={view} onChange={setSelection} />
+								<Select options={policyItems} onChange={setSelection} />
 							</Box>
 						</>
 					)}

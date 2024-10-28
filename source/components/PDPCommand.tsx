@@ -12,8 +12,9 @@ export default function PDPCommand({ opa }: Props) {
 	return authToken ? (
 		<>
 			<Text color="green">Run the following command from your terminal:</Text>
-			<Text wrap='end'>
-				docker run -p 7766:7000 {opa ? `-p ${opa}:8181` : ''} --env PDP_API_KEY={authToken} --env PDP_DEBUG=true permitio/pdp-v2:latest
+			<Text wrap="end">
+				docker run -p 7766:7000 {opa ? `-p ${opa}:8181` : ''} --env PDP_API_KEY=
+				{authToken} --env PDP_DEBUG=true permitio/pdp-v2:latest
 			</Text>
 		</>
 	) : (

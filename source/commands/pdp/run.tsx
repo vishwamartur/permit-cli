@@ -5,7 +5,9 @@ import { type infer as zInfer, number, object } from 'zod';
 import { option } from 'pastel';
 
 export const options = object({
-	opa: number().optional().describe(option({ description: 'Expose OPA port from the PDP' })),
+	opa: number()
+		.optional()
+		.describe(option({ description: 'Expose OPA port from the PDP' })),
 });
 
 type Props = {

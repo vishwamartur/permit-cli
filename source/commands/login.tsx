@@ -57,61 +57,90 @@ export default function Login({ options: { key, workspace } }: Props) {
 	const [cookie, setCookie] = useState<string | undefined>('');
 	const [activeOrg, setActiveOrg] = useState<Org | null>(null);
 	const [activeProject, setActiveProject] = useState<Project | null>(null);
-	const [activeEnvironment, setActiveEnvironment] = useState<Environment | null>(null);
+	const [activeEnvironment, setActiveEnvironment] =
+		useState<Environment | null>(null);
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [environments, setEnvironments] = useState<Environment[]>([]);
-	const [state, setState] = useState<'login' | 'loggingIn' | 'org' | 'project' | 'environment' | 'done'>('login');
+	const [state, setState] = useState<
+		'login' | 'loggingIn' | 'org' | 'project' | 'environment' | 'done'
+	>('login');
 
 	useEffect(() => {
 		const fetchOrgs = async () => {
-			const { response: orgs } = await apiCall('v2/orgs', accessToken ?? '', cookie);
+			const { response: orgs } = await apiCall(
+				'v2/orgs',
+				accessToken ?? '',
+				cookie,
+			);
 
-			const selectedOrg = orgs.find((org: { key: string }) => workspace && org.key === workspace);
+			const selectedOrg = Array.isArray(orgs)
+				? orgs.find(
+						(org: { key: string }) => workspace && org.key === workspace,
+					)
+				: null;
 
 			if (selectedOrg) {
 				setActiveOrg({ label: selectedOrg.name, value: selectedOrg.id });
 				setState('project');
-			} else if (orgs && orgs.length === 1) {
+			} else if (Array.isArray(orgs) && orgs.length === 1) {
 				setActiveOrg({ label: orgs[0].name, value: orgs[0].id });
 				setState('project');
 			}
 
-			setOrgs(orgs.map((org: { name: string; id: string }) => ({ label: org.name, value: org.id })));
+			setOrgs(
+				Array.isArray(orgs)
+					? orgs.map((org: { name: string; id: string }) => ({
+							label: org.name,
+							value: org.id,
+						}))
+					: [],
+			);
 		};
 
 		if (state === 'org' && accessToken) {
 			fetchOrgs();
 		}
-	}, [state, accessToken, cookie, key]);
+	}, [state, accessToken, cookie, workspace]);
 
 	useEffect(() => {
 		const fetchProjects = async () => {
 			let newCookie = cookie ?? '';
 
-			const { headers } = await apiCall(`v2/auth/switch_org/${activeOrg?.value}`, accessToken ?? '', cookie ?? '', 'POST');
+			const { headers } = await apiCall(
+				`v2/auth/switch_org/${activeOrg?.value}`,
+				accessToken ?? '',
+				cookie ?? '',
+				'POST',
+			);
 
 			newCookie = headers.getSetCookie()[0] ?? '';
 			setCookie(newCookie);
 
-			const { response: projects } = await apiCall('v2/projects', accessToken ?? '', newCookie);
+			const { response: projects } = await apiCall(
+				'v2/projects',
+				accessToken ?? '',
+				newCookie,
+			);
 
-			if (projects.length === 1) {
+			if (Array.isArray(projects) && projects.length === 1) {
 				setActiveProject({ label: projects[0].name, value: projects[0].id });
 				setState('environment');
 			}
 
 			setProjects(
-				projects.map((project: { name: string; id: string }) => ({
-					label: project.name,
-					value: project.id,
-				})),
+				Array.isArray(projects)
+					? projects.map((project: { name: string; id: string }) => ({
+							label: project.name,
+							value: project.id,
+						}))
+					: [],
 			);
 		};
 
 		if (activeOrg) {
 			fetchProjects();
 		}
-	}, [activeOrg]);
+	}, [activeOrg, accessToken, cookie]);
 
 	useEffect(() => {
 		const fetchEnvironments = async () => {
@@ -121,17 +150,19 @@ export default function Login({ options: { key, workspace } }: Props) {
 				cookie ?? '',
 			);
 			setEnvironments(
-				environments.map((environment: { name: string; id: string }) => ({
-					label: environment.name,
-					value: environment.id,
-				})),
+				Array.isArray(environments)
+					? environments.map((environment: { name: string; id: string }) => ({
+							label: environment.name,
+							value: environment.id,
+						}))
+					: [],
 			);
 		};
 
 		if (activeProject) {
 			fetchEnvironments();
 		}
-	}, [activeProject]);
+	}, [activeProject, accessToken, cookie]);
 
 	useEffect(() => {
 		if (state === 'done') {
@@ -156,7 +187,12 @@ export default function Login({ options: { key, workspace } }: Props) {
 				// Open the authentication URL in the default browser
 				const verifier = await browserAuth();
 				const token = await authCallbackServer(verifier);
-				const { headers } = await apiCall('v2/auth/login', token ?? '', '', 'POST');
+				const { headers } = await apiCall(
+					'v2/auth/login',
+					token ?? '',
+					'',
+					'POST',
+				);
 				setAccessToken(token);
 				setCookie(headers.getSetCookie()[0]);
 			}
@@ -165,7 +201,7 @@ export default function Login({ options: { key, workspace } }: Props) {
 		};
 
 		authenticateUser();
-    }, [key]);
+	}, [key]);
 
 	return (
 		<>
@@ -216,7 +252,8 @@ export default function Login({ options: { key, workspace } }: Props) {
 									accessToken ?? '',
 									cookie,
 								);
-								await saveAuthToken(response.secret);
+								const { secret } = response as { secret: string };
+								await saveAuthToken(secret);
 								setState('done');
 							}}
 						/>

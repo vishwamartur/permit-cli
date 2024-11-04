@@ -36,8 +36,13 @@ type Props = {
 };
 
 interface PolicyItem {
-	id: string; // Adjust the type based on your actual data structure
-	// Include other fields as necessary
+	id: string;
+	name?: string;
+}
+
+interface Option {
+	label: string;
+	value: string;
 }
 
 interface QueryResult {
@@ -51,7 +56,9 @@ export default function Policy({ options }: Props) {
 		result: { result: [] },
 		status: 0,
 	});
-	const [selection, setSelection] = React.useState<PolicyItem | undefined>(undefined);
+	const [selection, setSelection] = React.useState<PolicyItem | undefined>(
+		undefined,
+	);
 	const [selectionFilter, setSelectionFilter] = React.useState<string>('');
 
 	const queryOPA = async (apiKey: string, path?: string) => {
@@ -70,17 +77,25 @@ export default function Policy({ options }: Props) {
 			await queryOPA(apiKey);
 		};
 		performQuery().catch(err => setError(err));
-	}, []);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [options.apiKey, options.serverUrl]);
 
-	const policyItems = res.result.result.map(i => {
-		return { label: i.id, value: i };
-	});
+	const policyItems: Option[] = res.result.result.map(i => ({
+		label: i.id,
+		value: i.id,
+	}));
+
 	const fuse = new Fuse(policyItems, {
 		keys: ['label', 'id'],
 		minMatchCharLength: 0,
 	});
 	const filtered = fuse.search(selectionFilter).map(i => i.item);
 	const view = filtered.length === 0 ? policyItems : filtered;
+
+	const handleSelection = (selectedValue: string) => {
+		const selectedPolicy = res.result.result.find(p => p.id === selectedValue);
+		setSelection(selectedPolicy);
+	};
 
 	return (
 		<>
@@ -99,13 +114,18 @@ export default function Policy({ options }: Props) {
 							<Box flexDirection="column" gap={1}>
 								<TextInput
 									placeholder="Type text to filter list"
-									onSubmit={setSelection}
+									onSubmit={(value: string) => {
+										const selectedPolicy = res.result.result.find(
+											p => p.id === value,
+										);
+										setSelection(selectedPolicy);
+									}}
 									onChange={setSelectionFilter}
 									suggestions={policyItems.map(i => i.label)}
 								/>
 							</Box>
 							<Box padding={2} flexDirection="column" gap={1}>
-								<Select options={policyItems} onChange={setSelection} />
+								<Select options={policyItems} onChange={handleSelection} />
 							</Box>
 						</>
 					)}

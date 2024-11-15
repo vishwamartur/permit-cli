@@ -39,4 +39,20 @@ $ permit-cli --help
 
     $ permit-cli api-key permit_key_..........
     Key saved to './permit.key'
+
+    $ permit-cli playground build
+    Initiates the interactive policy builder with AI suggestions.
+
+    $ permit-cli playground test
+    Runs the sandbox testing environment for real-time policy testing and evaluation logs.
 ```
+
+## AI-Powered Policy Builder and Testing Environment
+
+### Interactive Policy Builder
+
+The `permit playground build` command allows users to create policies through a step-by-step interface, with visual representation and prompts for input. The AI suggests policy structures and rules based on user context to streamline policy creation.
+
+### Testing Environment
+
+The `permit playground test` command enables users to test their policies in real-time by running scenarios to see access results and evaluation logs. This feature enhances usability, reduces the time needed for policy creation, and allows for thorough validation, ensuring more secure and effective authorization strategies.

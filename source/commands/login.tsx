@@ -48,7 +48,7 @@ export default function Login({ options: { key, workspace } }: Props) {
 	const [projects, setProjects] = useState<[]>([]);
 	const [environments, setEnvironments] = useState<[]>([]);
 	const [state, setState] = useState<
-		'login' | 'loggingIn' | 'org' | 'project' | 'environment' | 'done'
+			'login' | 'loggingIn' | 'org' | 'project' | 'environment' | 'done' | 'createWorkspace' | 'createProject'
 	>('login');
 
 	useEffect(() => {
@@ -69,6 +69,8 @@ export default function Login({ options: { key, workspace } }: Props) {
 			} else if (orgs && orgs.length === 1) {
 				setActiveOrg({ label: orgs[0].name, value: orgs[0].id });
 				setState('project');
+				} else if (orgs.length === 0) {
+				setState('createWorkspace');
 			}
 
 			setOrgs(orgs.map((org: any) => ({ label: org.name, value: org.id })));
@@ -102,6 +104,8 @@ export default function Login({ options: { key, workspace } }: Props) {
 			if (projects.length === 1) {
 				setActiveProject({ label: projects[0].name, value: projects[0].id });
 				setState('environment');
+				} else if (projects.length === 0) {
+				setState('createProject');
 			}
 
 			setProjects(
@@ -176,12 +180,36 @@ export default function Login({ options: { key, workspace } }: Props) {
 		authenticateUser();
 	}, [key]);
 
+	const handleCreateWorkspace = async (workspaceName: string) => {
+		const { response: workspace } = await apiCall(
+			'v2/orgs',
+			accessToken ?? '',
+			cookie ?? '',
+			'POST',
+			JSON.stringify({ name: workspaceName }),
+		);
+		setActiveOrg({ label: workspace.name, value: workspace.id });
+		setState('project');
+	};
+
+	const handleCreateProject = async (projectName: string) => {
+		const { response: project } = await apiCall(
+			'v2/projects',
+			accessToken ?? '',
+			cookie ?? '',
+			'POST',
+			JSON.stringify({ name: projectName, org_id: activeOrg.value }),
+		);
+		setActiveProject({ label: project.name, value: project.id });
+		setState('environment');
+	};
+
 	return (
 		<>
 			{state === 'login' && <Text>Login to Permit</Text>}
 			{state === 'loggingIn' && (
 				<Text>
-					<Spinner type="dots" /> Logging in...
+						<Spinner type="dots" /> Logging in...
 				</Text>
 			)}
 			{state === 'org' &&
@@ -235,6 +263,24 @@ export default function Login({ options: { key, workspace } }: Props) {
 						<Spinner type="dots" /> Loading Environments
 					</Text>
 				))}
+			{state === 'createWorkspace' && (
+				<>
+					<Text>No workspaces found. Please create a new workspace.</Text>
+					<TextInput
+						placeholder="Enter workspace name"
+						onSubmit={handleCreateWorkspace}
+					/>
+				</>
+			)}
+			{state === 'createProject' && (
+				<>
+					<Text>No projects found. Please create a new project.</Text>
+					<TextInput
+						placeholder="Enter project name"
+						onSubmit={handleCreateProject}
+					/>
+				</>
+			)}
 			{state === 'done' && activeOrg && (
 				<Text>
 					Logged in as {activeOrg.label} with selected environment as{' '}

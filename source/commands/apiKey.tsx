@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, Newline } from 'ink';
 import zod from 'zod';
 import { keyAccountOption } from '../options/keychain.js';
@@ -27,9 +27,9 @@ export default function ApiKey({ args, options }: Props) {
 	const key: string = args[1];
 	const isValid = key.length >= 97 && key.startsWith('permit_key_');
 
-	const [readKey, setReadKey] = React.useState('');
+	const [readKey, setReadKey] = useState('');
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (action === 'read') {
 			keytar
 				.getPassword(KEYSTORE_PERMIT_SERVICE_NAME, options.keyAccount)

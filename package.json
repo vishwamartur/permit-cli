@@ -12,8 +12,8 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": " NODE_NO_WARNINGS=1 tsc --watch",
-		"lint": "eslint \"source/**/*.{js,ts,tsx}\" --fix",
-		"lint:check": "eslint \"source/**/*.{js,ts,tsx}\"",
+		"lint": "eslint \"source/**/*.{js,ts,tsx}\"",
+		"lint:fix": "eslint \"source/**/*.{js,ts,tsx}\" --fix",
 		"test": "prettier --check ./source && npx tsx --test test*.tsx",
 		"simple-check": "npx tsx ./source/cli.tsx pdp check -u filip@permit.io -a create -r task"
 	},
@@ -30,7 +30,6 @@
 		"ink-spinner": "^5.0.0",
 		"keytar": "^7.9.0",
 		"open": "^10.1.0",
-		"parser": "^0.1.4",
 		"pastel": "^3.0.0",
 		"permitio": "^2.7.2",
 		"react": "^18.2.0",
@@ -53,6 +52,7 @@
 		"eslint-plugin-sonarjs": "^2.0.4",
 		"globals": "^15.11.0",
 		"ink-testing-library": "^3.0.0",
+		"parser": "^0.1.4",
 		"prettier": "^3.3.3",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.6.3",

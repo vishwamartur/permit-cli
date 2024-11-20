@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [js.configs.recommended,
-	...compat.extends('plugin:react/recommended'),
+...compat.extends('plugin:react/recommended'),
   prettierConfig
 ]
 
@@ -39,7 +39,7 @@ export default [
     },
   },
   {
-    files: ["source/**/*.{js,ts,tsx}","*/.{js,ts,jsx,tsx}"],
+    files: ["source/**/*.{js,ts,tsx}", "*/.{js,ts,jsx,tsx}"],
     plugins: {
       "@typescript-eslint": tsPlugin,
       sonarjs: sonarjsPlugin,
@@ -49,7 +49,7 @@ export default [
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
-			...reactHooksPlugin.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
       ...tsPlugin.configs['recommended'].rules,
       "no-use-before-define": "warn",
       "@typescript-eslint/no-unused-vars": "warn",

@@ -40,3 +40,22 @@ $ permit-cli --help
     $ permit-cli api-key permit_key_..........
     Key saved to './permit.key'
 ```
+
+## Running Tests
+
+To run the tests locally, use the following command:
+
+```
+npm test
+```
+
+This will run all the tests and generate a coverage report in the `coverage` directory.
+
+## Writing Tests
+
+When writing new tests, follow these guidelines:
+
+1. Create a new test file in the appropriate directory (e.g., `source/commands` or `source/components`).
+2. Use the existing test files as examples for writing your tests.
+3. Ensure that your tests cover edge cases and different scenarios.
+4. Run the tests locally to ensure they pass before committing your changes.

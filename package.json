@@ -14,7 +14,7 @@
 		"dev": " NODE_NO_WARNINGS=1 tsc --watch",
 		"lint": "eslint \"source/**/*.{js,ts,tsx}\"",
 		"lint:fix": "eslint \"source/**/*.{js,ts,tsx}\" --fix",
-		"test": "prettier --check ./source && npx tsx --test test*.tsx",
+		"test": "jest --coverage",
 		"simple-check": "npx tsx ./source/cli.tsx pdp check -u filip@permit.io -a create -r task"
 	},
 	"files": [
@@ -56,6 +56,15 @@
 		"prettier": "^3.3.3",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.6.3",
-		"typescript-eslint": "^8.11.0"
+		"typescript-eslint": "^8.11.0",
+		"jest": "^29.0.0",
+		"ts-jest": "^29.0.0"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"collectCoverage": true,
+		"coverageDirectory": "coverage",
+		"coverageReporters": ["text", "lcov"]
 	}
 }

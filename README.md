@@ -39,4 +39,13 @@ $ permit-cli --help
 
     $ permit-cli api-key permit_key_..........
     Key saved to './permit.key'
+
+    $ permit-cli fga graph
+    Loading graph data...
+    Graph Data:
+    {
+      "resourceInstances": [...],
+      "roles": [...],
+      "relationships": [...]
+    }
 ```

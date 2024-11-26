@@ -41,3 +41,15 @@ export const apiCall = async (
 		status: res.status,
 	};
 };
+
+export const fetchResourceInstances = async (token: string, cookie?: string): Promise<ApiResponse> => {
+	return apiCall('v2/resource-instances', token, cookie);
+};
+
+export const fetchRoles = async (token: string, cookie?: string): Promise<ApiResponse> => {
+	return apiCall('v2/roles', token, cookie);
+};
+
+export const fetchRelationships = async (token: string, cookie?: string): Promise<ApiResponse> => {
+	return apiCall('v2/relationships', token, cookie);
+};

@@ -39,4 +39,10 @@ $ permit-cli --help
 
     $ permit-cli api-key permit_key_..........
     Key saved to './permit.key'
+
+    $ permit-cli deploy <policy-file>
+    Deploys the specified policy file to the desired environment.
+
+    $ permit-cli test <policy-file>
+    Tests the specified policy file to validate its behavior in various scenarios.
 ```
